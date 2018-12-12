@@ -4,6 +4,14 @@
 #include<dirent.h>
 #include<sys/stat.h>
 
+/* Promise of Originality
+I promise that this source code file has, in its entirety, been
+written by myself and by no other person or persons. If at any time an
+exact copy of this source code is found to be used by another person in
+this term, I understand that both myself and the student that submitted
+the copy will receive a zero on this assignment.
+*/
+
 long totalSpace = 0;
 long my_readdir(char *pathname) {
 	DIR *pdir;
@@ -13,7 +21,10 @@ long my_readdir(char *pathname) {
 
 	fprintf(stdout, "Directory : %s\n", pathname);
 	pdir = opendir(pathname);
-
+	if(pdir == NULL){
+	    perror("Something happened trying to open directory");
+	    exit(1);
+	}
 	while((dent = readdir(pdir)) != NULL) {
 		if(dent->d_name[0] == '.') continue;
 		asprintf(&tmpstr, "%s/%s", pathname, dent->d_name);
@@ -23,7 +34,7 @@ long my_readdir(char *pathname) {
 		};
 		if(S_ISDIR(st.st_mode)) my_readdir(tmpstr);
 		else{
-		    fprintf(stdout, "    Size: %ld - Filename : %s\n",st.st_size, dent->d_name);
+		    fprintf(stdout, "   %ld: - Filename : %s\n",st.st_size, dent->d_name);
 		    totalSpace += st.st_size;
 		}
 
@@ -34,7 +45,6 @@ long my_readdir(char *pathname) {
 
 int main(int argc, char *argv[]) {
 	char *pathname = ".";
-	
 
 	if(argc > 1) pathname = argv[1];
 
